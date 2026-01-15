@@ -43,11 +43,15 @@ public class UserSeeder implements CommandLineRunner {
                 .role(Role.USER)
                 .username("Johnny")
                 .build();
-
+        if (!userRepository.existsByEmail(user1.getEmail())) {
         userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
-
+        }
+        if (!userRepository.existsByEmail(user2.getEmail())) {
+            userRepository.save(user2);
+        }
+        if (!userRepository.existsByEmail(user3.getEmail())) {
+            userRepository.save(user3);
+        }
         log.info("--- 3 Users were seeded! ---");
     }
 
