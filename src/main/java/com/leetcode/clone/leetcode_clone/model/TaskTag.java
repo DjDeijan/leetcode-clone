@@ -1,16 +1,16 @@
 package com.leetcode.clone.leetcode_clone.model;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.leetcode.clone.leetcode_clone.model.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "task_tag")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+// @Getter
+// @Setter
+// @NoArgsConstructor
+// @AllArgsConstructor
+// @Builder
 public class TaskTag {
 
     @EmbeddedId
