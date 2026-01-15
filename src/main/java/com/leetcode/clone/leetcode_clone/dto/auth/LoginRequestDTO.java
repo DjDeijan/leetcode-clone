@@ -7,12 +7,12 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record LoginRequestDTO(
-        @Schema(description = "User's email address", example = "my_mail@gmail.com", format = "email")
+        @Schema(description = "User's email address", example = "ivpetrov@gmail.com", format = "email")
         @NotBlank
         @Email
         String email,
-
-        @Schema(description = "User's password", example = "myPass1234")
+        //auto fill in admin credentials
+        @Schema(description = "User's password", example = "changeMe4321")
         @NotBlank
         @Size(min = 8, max = 64, message = "Password must be between 8 and 64 characters")
         @Pattern(regexp = ".*\\d.*", message = "Password must contain at least one number")
