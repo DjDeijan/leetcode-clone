@@ -42,7 +42,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "User Controller", description = "Operations about user users")
+@Tag(name = "User Controller", description = "Operations about users")
 public class UserController {
 
     private final UserService userService;

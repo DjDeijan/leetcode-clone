@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "submission")
+@Table(name = "submissions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,19 +20,21 @@ public class Submission {
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(name = "source_code", nullable = false)
     private String sourceCode;
 
     @Column(name = "language_id", nullable = false)
     private String languageId;
 
+    @Column(nullable = false)
     private String status;
+
     private String grade;
 
     @Column(columnDefinition = "TEXT")
     private String errors;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

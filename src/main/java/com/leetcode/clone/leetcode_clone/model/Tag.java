@@ -3,8 +3,11 @@ package com.leetcode.clone.leetcode_clone.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "tag")
+@Table(name = "tags")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +19,10 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<TaskTag> taskTags = new HashSet<>();
 }

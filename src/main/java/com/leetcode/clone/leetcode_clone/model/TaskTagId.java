@@ -1,6 +1,7 @@
 package com.leetcode.clone.leetcode_clone.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.*;
 
 import java.io.Serializable;
@@ -10,9 +11,11 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@EqualsAndHashCode
 public class TaskTagId implements Serializable {
-
+    @Column(name = "task_id")
     private Long taskId;
+
+    @Column(name = "tag_id")
     private Long tagId;
 }
