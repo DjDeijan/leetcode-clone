@@ -1,16 +1,15 @@
 package com.leetcode.clone.leetcode_clone.model;
 
-import com.leetcode.clone.leetcode_clone.model.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "task_tag")
-// @Getter
-// @Setter
-// @NoArgsConstructor
-// @AllArgsConstructor
-// @Builder
+@Table(name = "task_tags")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TaskTag {
 
     @EmbeddedId
