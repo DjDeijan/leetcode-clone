@@ -5,17 +5,23 @@ import com.leetcode.clone.leetcode_clone.dto.submission.SubmissionResponseDTO;
 import com.leetcode.clone.leetcode_clone.model.Submission;
 import com.leetcode.clone.leetcode_clone.service.SubmissionService;
 import com.leetcode.clone.leetcode_clone.mapper.SubmissionMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/submissions")
 @RequiredArgsConstructor
+@Validated
+@Tag(name = "Submission Controller", description = "Operations about submissions")
 public class SubmissionController {
 
     private final SubmissionService submissionService;
@@ -34,7 +40,7 @@ public class SubmissionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SubmissionResponseDTO>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<SubmissionResponseDTO>> getAll(@ParameterObject @PageableDefault(size = 2, sort = "id") Pageable pageable) {
         Page<SubmissionResponseDTO> page = submissionService.getAllSubmissions(pageable)
                 .map(submissionMapper::toResponseDTO);
         return ResponseEntity.ok(page);
