@@ -3,6 +3,9 @@ package com.leetcode.clone.leetcode_clone.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "task")
 @Getter
@@ -24,5 +27,13 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User CreatedByUser;
+    private User createdByUser;
+
+    @OneToMany(
+            mappedBy = "task",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private Set<TaskTag> taskTags = new HashSet<>();
 }
