@@ -2,6 +2,7 @@ package com.leetcode.clone.leetcode_clone.mapper;
 
 import com.leetcode.clone.leetcode_clone.dto.tag.TagRequestDTO;
 import com.leetcode.clone.leetcode_clone.dto.tag.TagResponseDTO;
+import com.leetcode.clone.leetcode_clone.dto.tag.TaskSummaryDTO;
 import com.leetcode.clone.leetcode_clone.model.Tag;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +17,13 @@ public interface TagMapper {
     TagResponseDTO toTagResponseDTO(Tag tag);
 
     List<TagResponseDTO> toTagResponseDTOList(List<Tag> tags);
+
+    default TaskSummaryDTO mapTaskTagToTaskSummaryDTO(com.leetcode.clone.leetcode_clone.model.TaskTag taskTag) {
+        if (taskTag == null || taskTag.getTask() == null) {
+            return null;
+        }
+        return new TaskSummaryDTO(taskTag.getTask().getId(), taskTag.getTask().getTitle());
+    }
 
     @Mapping(target = "id", ignore = true)
     Tag toTag(TagRequestDTO tagRequestDTO);
