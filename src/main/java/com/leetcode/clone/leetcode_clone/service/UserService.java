@@ -103,13 +103,13 @@ public class UserService {
         return userRepository.findByUsername(firstName);
     }
 
-//    @Transactional
-//    public User patchUserAvatar(Long userId, MultipartFile avatarImage) {
-//        User fetchedUser = getUserOrThrow(userId);
-//        String imagePublicId = cloudinaryService.uploadImage(avatarImage);
-//        fetchedUser.setProfileImgPublicId(imagePublicId);
-//        return userRepository.save(fetchedUser);
-//    }
+    @Transactional
+    public User patchUserAvatar(Long userId, MultipartFile avatarImage) {
+        User fetchedUser = getUserOrThrow(userId);
+        String imagePublicId = cloudinaryService.uploadImage(avatarImage);
+        fetchedUser.setProfileImgPublicId(imagePublicId);
+        return userRepository.save(fetchedUser);
+    }
 
     @Transactional
     public void deleteUserAvatar(Long userId) {

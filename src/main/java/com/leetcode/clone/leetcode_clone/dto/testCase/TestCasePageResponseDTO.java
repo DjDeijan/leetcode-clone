@@ -1,4 +1,4 @@
 package com.leetcode.clone.leetcode_clone.dto.testCase;
 
-public class TestCasep {
+public class TestCasePageResponseDTO {
 }

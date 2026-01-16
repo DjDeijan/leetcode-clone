@@ -5,6 +5,7 @@ import com.leetcode.clone.leetcode_clone.exception.ResourceNotFoundException;
 import com.leetcode.clone.leetcode_clone.mapper.TaskMapper;
 import com.leetcode.clone.leetcode_clone.mapper.UserMapper;
 import com.leetcode.clone.leetcode_clone.model.*;
+import com.leetcode.clone.leetcode_clone.repository.TagRepository;
 import com.leetcode.clone.leetcode_clone.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final TagRepository tagRepository;
     private final TaskMapper taskMapper;
     private final UserService userService;
 
@@ -34,32 +36,31 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // Needs Tag in order to function
-//    @Transactional
-//    public void addTagToTask(Long taskId, Long tagId) {
-//        Task task = taskRepository.findById(taskId)
-//                .orElseThrow(() -> new ResourceNotFoundException(Task.class, taskId));
-//
-//        Tag tag = tagRepository.findById(tagId)
-//                .orElseThrow(() -> new ResourceNotFoundException(Tag.class, tagId));
-//
-//        TaskTag taskTag = TaskTag.builder()
-//                .id(new TaskTagId(taskId, tagId))
-//                .task(task)
-//                .tag(tag)
-//                .build();
-//
-//        task.getTaskTags().add(taskTag);
-//    }
+    @Transactional
+    public void addTagToTask(Long taskId, Long tagId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException(Task.class, taskId));
 
-//    @Transactional
-//    public void removeTagFromTask(Long taskId, Long tagId) {
-//        Task task = getTaskOrThrow(taskId);
-//
-//        task.getTaskTags().removeIf(
-//                tt -> tt.getId().getTagId().equals(tagId)
-//        );
-//    }
+        Tag tag = tagRepository.findById(tagId)
+                .orElseThrow(() -> new ResourceNotFoundException(Tag.class, tagId));
+
+        TaskTag taskTag = TaskTag.builder()
+                .id(new TaskTagId(taskId, tagId))
+                .task(task)
+                .tag(tag)
+                .build();
+
+        task.getTaskTags().add(taskTag);
+    }
+
+    @Transactional
+    public void removeTagFromTask(Long taskId, Long tagId) {
+        Task task = getTaskOrThrow(taskId);
+
+        task.getTaskTags().removeIf(
+                tt -> tt.getId().getTagId().equals(tagId)
+        );
+    }
 
 
     public Task getTaskOrThrow(Long id) {
