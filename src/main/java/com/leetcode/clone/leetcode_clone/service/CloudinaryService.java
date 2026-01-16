@@ -20,19 +20,19 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    public String uploadImage(MultipartFile file) {
-        try {
-            Map uploadParams = ObjectUtils.asMap(
-                    "upload_preset", "spring-users",
-                    "quality", "auto",           // automatic compression
-                    "fetch_format", "auto"       // convert to WebP/AVIF when supported
-            );
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);
-            return (String) uploadResult.get("public_id");
-        } catch (Exception e) {
-            throw new CloudinaryException(CloudinaryException.Operation.UPLOAD, e);
-        }
-    }
+//    public String uploadImage(MultipartFile file) {
+//        try {
+//            Map uploadParams = ObjectUtils.asMap(
+//                    "upload_preset", "spring-users",
+//                    "quality", "auto",           // automatic compression
+//                    "fetch_format", "auto"       // convert to WebP/AVIF when supported
+//            );
+//            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);
+//            return (String) uploadResult.get("public_id");
+//        } catch (Exception e) {
+//            throw new CloudinaryException(CloudinaryException.Operation.UPLOAD, e);
+//        }
+//    }
 
     public void deleteImage(String publicId) {
         try {

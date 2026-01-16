@@ -68,6 +68,18 @@ public class UserService {
     }
 
     @Transactional
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+            throw new IllegalStateException("No authenticated user found in security context");
+        }
+
+        CustomUserPrincipal principal = (CustomUserPrincipal) auth.getPrincipal();
+        return getUserOrThrow(principal.getUserId());
+    }
+
+    @Transactional
     public User patchUserFirstName(Long id, String newUsername) {
         User fetchedUser = getUserOrThrow(id);
         fetchedUser.setUsername(newUsername);
@@ -91,13 +103,13 @@ public class UserService {
         return userRepository.findByUsername(firstName);
     }
 
-    @Transactional
-    public User patchUserAvatar(Long userId, MultipartFile avatarImage) {
-        User fetchedUser = getUserOrThrow(userId);
-        String imagePublicId = cloudinaryService.uploadImage(avatarImage);
-        fetchedUser.setProfileImgPublicId(imagePublicId);
-        return userRepository.save(fetchedUser);
-    }
+//    @Transactional
+//    public User patchUserAvatar(Long userId, MultipartFile avatarImage) {
+//        User fetchedUser = getUserOrThrow(userId);
+//        String imagePublicId = cloudinaryService.uploadImage(avatarImage);
+//        fetchedUser.setProfileImgPublicId(imagePublicId);
+//        return userRepository.save(fetchedUser);
+//    }
 
     @Transactional
     public void deleteUserAvatar(Long userId) {
@@ -116,7 +128,7 @@ public class UserService {
      * @param newRole    the new role to be assigned
      * @return The user with edited role
      * @throws IllegalStateException if the user is trying to update their own role
-     * @see #patchUserAvatar(Long, MultipartFile)
+     //* @see #patchUserAvatar(Long, MultipartFile)
      * @since Exercise 11
      */
 //     Showcase @deprecated Javadoc Annotation:
