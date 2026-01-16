@@ -3,6 +3,9 @@ package com.leetcode.clone.leetcode_clone.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "tags")
 @Getter
@@ -18,4 +21,8 @@ public class Tag {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<TaskTag> taskTags = new ArrayList<>();
 }

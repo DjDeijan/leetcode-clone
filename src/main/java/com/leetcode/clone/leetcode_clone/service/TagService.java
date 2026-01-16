@@ -32,11 +32,11 @@ public class TagService {
     }
 
     public List<Tag> getAllTags() {
-        return tagRepository.findAll();
+        return tagRepository.findAllWithTasks();
     }
 
     public Tag getTagOrThrow(Long id) {
-        return tagRepository.findById(id)
+        return tagRepository.findByIdWithTasks(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Tag.class, id));
     }
 
