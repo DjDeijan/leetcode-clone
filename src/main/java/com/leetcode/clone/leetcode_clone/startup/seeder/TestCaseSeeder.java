@@ -29,7 +29,7 @@ public class TestCaseSeeder implements CommandLineRunner {
         }
 
         Long id = 1L;
-        Task task = Task.builder().id(10L).build();
+        Task task = Task.builder().id(1L).build();
 
         // Assumes Tasks are seeded and IDs start at 1.
         TestCase tc1 = TestCase.builder()
