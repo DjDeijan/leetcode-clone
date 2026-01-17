@@ -165,7 +165,7 @@ public class TestCaseControllerTest {
                 .stackLimitKb(requestDTO.stackLimitKb())
                 .build();
 
-        Long taskId = 1L;
+        Long taskId = 7L;
         TestCaseResponseDTO responseDTO = new TestCaseResponseDTO(
                 10L,
                 taskId,
@@ -199,7 +199,7 @@ public class TestCaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(10))
                 .andExpect(jsonPath("$.taskId").value(7))

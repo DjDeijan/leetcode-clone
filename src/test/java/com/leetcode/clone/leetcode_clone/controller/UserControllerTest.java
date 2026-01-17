@@ -81,7 +81,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(responseDTO.id().intValue()))
-                .andExpect(jsonPath("$.firstName").value(responseDTO.username()));
+                .andExpect(jsonPath("$.username").value(responseDTO.username()));
     }
 
     @Test
@@ -152,9 +152,9 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.users[0].id").value(responseDTO1.id().intValue()))
-                .andExpect(jsonPath("$.users[0].firstName").value(responseDTO1.username()))
+                .andExpect(jsonPath("$.users[0].username").value(responseDTO1.username()))
                 .andExpect(jsonPath("$.users[1].id").value(responseDTO2.id().intValue()))
-                .andExpect(jsonPath("$.users[1].firstName").value(responseDTO2.username()));
+                .andExpect(jsonPath("$.users[1].username").value(responseDTO2.username()));
     }
     // =================================================
 

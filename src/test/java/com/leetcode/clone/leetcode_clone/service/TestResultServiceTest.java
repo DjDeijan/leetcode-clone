@@ -84,8 +84,8 @@ public class TestResultServiceTest {
     void createTestResult_success() {
         // Arrange
         TestResultRequestDTO request = new TestResultRequestDTO(
-                1L,
                 2L,
+                1L,
                 "Accepted",
                 "token-123",
                 "Output: 5",
