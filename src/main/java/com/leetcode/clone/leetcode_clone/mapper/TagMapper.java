@@ -14,6 +14,7 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TagMapper {
 
+    @Mapping(target = "tasks", source = "taskTags")
     TagResponseDTO toTagResponseDTO(Tag tag);
 
     List<TagResponseDTO> toTagResponseDTOList(List<Tag> tags);

@@ -32,8 +32,27 @@ public class TaskService {
         User currentUser = userService.getCurrentUser();
         task.setCreatedByUser(currentUser);
 
+        if (taskRequestDTO.tagIds() != null && !taskRequestDTO.tagIds().isEmpty()) {
+            setTaskTags(task, taskRequestDTO.tagIds());
+        }
+
         log.info("New task created title={} createdByUserId={}", task.getTitle(), task.getCreatedByUser());
         return taskRepository.save(task);
+    }
+
+    private void setTaskTags(Task task, java.util.List<Long> tagIds) {
+        task.getTaskTags().clear();
+        for (Long tagId : tagIds) {
+            Tag tag = tagRepository.findById(tagId)
+                    .orElseThrow(() -> new ResourceNotFoundException(Tag.class, tagId));
+
+            TaskTag taskTag = TaskTag.builder()
+                    .id(new TaskTagId(task.getId(), tagId))
+                    .task(task)
+                    .tag(tag)
+                    .build();
+            task.getTaskTags().add(taskTag);
+        }
     }
 
     @Transactional
