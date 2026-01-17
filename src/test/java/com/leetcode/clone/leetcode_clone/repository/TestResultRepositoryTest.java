@@ -42,6 +42,7 @@ class TestResultRepositoryTest {
         Task task = Task.builder()
                 .title("Test Task")
                 .description("Test Description")
+                .createdByUser(user)
                 .build();
         entityManager.persist(task);
 
