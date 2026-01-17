@@ -21,10 +21,14 @@ class TaskRepositoryTest {
 
     @Test
     void findAllByCreatedByUserId_returnsCorrectTasks() {
-        User user = userRepository.save(User.builder().username("u").build());
+        User user = userRepository.save(User.builder()
+                .username("u")
+                .email("test@gmail.com")
+                .password("testPassword")
+                .build());
 
-        Task t1 = Task.builder().title("A").createdByUser(user).build();
-        Task t2 = Task.builder().title("B").createdByUser(user).build();
+        Task t1 = Task.builder().title("A").createdByUser(user).description("test").build();
+        Task t2 = Task.builder().title("B").createdByUser(user).description("test2").build();
 
         taskRepository.saveAll(List.of(t1, t2));
 

@@ -6,8 +6,8 @@ import com.leetcode.clone.leetcode_clone.mapper.TaskMapper;
 import com.leetcode.clone.leetcode_clone.model.Tag;
 import com.leetcode.clone.leetcode_clone.model.Task;
 import com.leetcode.clone.leetcode_clone.model.User;
+import com.leetcode.clone.leetcode_clone.repository.TagRepository;
 import com.leetcode.clone.leetcode_clone.repository.TaskRepository;
-import com.leetcode.clone.leetcode_clone.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
@@ -27,7 +27,7 @@ class TaskServiceTest {
     @Mock
     private TaskRepository taskRepository;
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
     @Mock
     private TagRepository tagRepository;
     @Mock
@@ -44,14 +44,15 @@ class TaskServiceTest {
         TaskRequestDTO dto = new TaskRequestDTO(
                 "Title",
                 "Desc",
+                null,
                 1L,
                 List.of(10L)
         );
 
         Task mapped = Task.builder().title("Title").build();
 
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        Mockito.when(tagRepository.findAllById(List.of(10L))).thenReturn(List.of(tag));
+        Mockito.when(userService.getCurrentUser()).thenReturn(user);
+        Mockito.when(tagRepository.findById(10L)).thenReturn(Optional.of(tag));
         Mockito.when(taskMapper.toTask(dto)).thenReturn(mapped);
         Mockito.when(taskRepository.save(mapped)).thenReturn(mapped);
 
@@ -63,12 +64,11 @@ class TaskServiceTest {
 
     @Test
     void createTask_whenUserMissing_throwsException() {
-        TaskRequestDTO dto = new TaskRequestDTO("T", "D", 99L, List.of());
+        TaskRequestDTO dto = new TaskRequestDTO("T", "D", null, 99L, List.of());
 
-        Mockito.when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        Mockito.when(userService.getCurrentUser()).thenThrow(new IllegalStateException("No authenticated user"));
 
         assertThatThrownBy(() -> taskService.createTask(dto))
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 }
-

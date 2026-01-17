@@ -2,6 +2,7 @@ package com.leetcode.clone.leetcode_clone.repository;
 
 import com.leetcode.clone.leetcode_clone.model.Task;
 import com.leetcode.clone.leetcode_clone.model.TestCase;
+import com.leetcode.clone.leetcode_clone.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,10 +22,27 @@ class TestCaseRepositoryTest {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void findAllByTaskId_returnsOnlyMatchingTestCases() {
-        Task task1 = taskRepository.save(Task.builder().title("T1").build());
-        Task task2 = taskRepository.save(Task.builder().title("T2").build());
+        User user = userRepository.save(User.builder()
+                .email("test@example.com")
+                .password("password")
+                .username("testuser")
+                .build());
+
+        Task task1 = taskRepository.save(Task.builder()
+                .title("Ta")
+                .description("Da")
+                .createdByUser(user)
+                .build());
+        Task task2 = taskRepository.save(Task.builder()
+                .title("Ta2")
+                .description("Da")
+                .createdByUser(user)
+                .build());
 
         TestCase tc1 = TestCase.builder()
                 .task(task1)

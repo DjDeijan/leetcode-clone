@@ -4,6 +4,7 @@ import com.leetcode.clone.leetcode_clone.config.security.JwtProvider;
 import com.leetcode.clone.leetcode_clone.dto.task.TaskResponseDTO;
 import com.leetcode.clone.leetcode_clone.mapper.TaskMapper;
 import com.leetcode.clone.leetcode_clone.model.Task;
+import com.leetcode.clone.leetcode_clone.model.User;
 import com.leetcode.clone.leetcode_clone.service.CustomUserDetailsService;
 import com.leetcode.clone.leetcode_clone.service.TaskService;
 import org.junit.jupiter.api.Test;
@@ -63,20 +64,26 @@ class TaskControllerTest {
 
     @Test
     void createTask_returns201() throws Exception {
-        Task task = Task.builder().id(1L).build();
+        User user = User.builder().id(1L).build();
+        Task task = Task.builder()
+                .id(1L)
+                .title("Ta")
+                .description("Da")
+                .createdByUser(user)
+                .build();
 
         Mockito.when(taskService.createTask(any())).thenReturn(task);
         Mockito.when(taskMapper.toTaskResponseDTO(task))
-                .thenReturn(new TaskResponseDTO(1L, "T", "D", 1L, List.of()));
+                .thenReturn(new TaskResponseDTO(1L, "Ta", "Da", 1L, List.of()));
 
         String json = """
-            {
-              "title": "T",
-              "description": "D",
-              "createdByUserId": 1,
-              "tagIds": []
-            }
-        """;
+                {
+                  "title": "Ta",
+                  "description": "Da",
+                  "createdByUserId": 1,
+                  "tagIds": []
+                }
+            """;
 
         mockMvc.perform(post("/tasks")
                         .contentType(MediaType.APPLICATION_JSON)

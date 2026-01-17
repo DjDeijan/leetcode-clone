@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class TaskMapperTest {
@@ -50,6 +50,7 @@ class TaskMapperTest {
         TaskRequestDTO dto = new TaskRequestDTO(
                 "Title",
                 "Desc",
+                null,
                 3L,
                 List.of(1L, 2L)
         );
@@ -58,7 +59,7 @@ class TaskMapperTest {
 
         assertThat(task.getId()).isNull();
         assertThat(task.getCreatedByUser()).isNull();
-        assertThat(task.getTaskTags()).isNull();
+        assertThat(task.getTaskTags()).isEmpty();
     }
 }
 
