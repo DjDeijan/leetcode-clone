@@ -38,8 +38,8 @@ public class TaskSeeder implements CommandLineRunner {
         }
 
         Task t1 = Task.builder()
-                .title("Solve two-sum")
-                .description("Warm-up problem: implement the classic two-sum using a hash map.")
+                .title("Console writeline")
+                .description("Read input and write it to the console")
                 .createdByUser(userRepository.findById(1L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
                 .build();
 

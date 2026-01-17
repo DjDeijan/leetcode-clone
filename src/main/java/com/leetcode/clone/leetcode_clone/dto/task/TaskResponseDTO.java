@@ -8,6 +8,6 @@ public record TaskResponseDTO(
         Long id,
         String title,
         String description,
-        User createdByUser,
+        Long createdByUserId,
         List<Long> tagIds
 ) {}
