@@ -11,6 +11,7 @@ public record TaskRequestDTO(
         @NotBlank @Size(min = 2, max = 200) String title,
         @Size(max = 10_000) String description,
         User createdByUser,
+        @Positive Long createdByUserId,
         List<@Positive Long> tagIds
 
 ) {}
