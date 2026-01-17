@@ -3,11 +3,17 @@ package com.leetcode.clone.leetcode_clone.startup.seeder;
 import com.leetcode.clone.leetcode_clone.model.Tag;
 import com.leetcode.clone.leetcode_clone.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
+@Profile("dev")
+@Order(2)
 @Component
 @RequiredArgsConstructor
 public class TagSeeder implements CommandLineRunner {

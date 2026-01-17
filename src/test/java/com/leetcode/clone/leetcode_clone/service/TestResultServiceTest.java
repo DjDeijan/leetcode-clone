@@ -23,22 +23,23 @@ public class TestResultServiceTest {
     private TestResultService testResultService;
     private TestResultMapper testResultMapper;
     private SubmissionService submissionService;
-    private TaskService taskService;
     private TestCaseRepository testCaseRepository;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
         testResultRepository = mock(TestResultRepository.class);
         testResultMapper = mock(TestResultMapper.class);
         submissionService = mock(SubmissionService.class);
-        taskService = mock(TaskService.class);
         testCaseRepository = mock(TestCaseRepository.class);
+        taskService = mock(TaskService.class);
+
         testResultService = new TestResultService(
                 testResultRepository,
+                testCaseRepository,
                 testResultMapper,
                 submissionService,
-                taskService,
-                testCaseRepository
+                taskService
         );
     }
 
@@ -83,8 +84,8 @@ public class TestResultServiceTest {
     void createTestResult_success() {
         // Arrange
         TestResultRequestDTO request = new TestResultRequestDTO(
-                1L,
                 2L,
+                1L,
                 "Accepted",
                 "token-123",
                 "Output: 5",
@@ -188,7 +189,6 @@ public class TestResultServiceTest {
         verify(testResultRepository, never()).deleteById(99L);
     }
     // =================================================
-
 
     // ============= getAllTestResults Tests =============
     @Test

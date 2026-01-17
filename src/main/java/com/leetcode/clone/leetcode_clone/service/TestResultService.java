@@ -25,10 +25,10 @@ import java.util.List;
 public class TestResultService {
 
     private final TestResultRepository testResultRepository;
+    private final TestCaseRepository testCaseRepository;
     private final TestResultMapper testResultMapper;
     private final SubmissionService submissionService;
     private final TaskService taskService;
-    private final TestCaseRepository testCaseRepository;
 
     @Transactional
     public TestResult createTestResult(TestResultRequestDTO dto) {

@@ -64,7 +64,7 @@ public class TestResultControllerTest {
         );
 
         when(testResultService.createTestResult(requestDTO)).thenReturn(testResult);
-        when(testResultMapper.toTestResultResponseDTO(testResult)).thenReturn(responseDTO);
+        when(testResultMapper.toResponseDTO(testResult)).thenReturn(responseDTO);
 
         // Act
         ResponseEntity<TestResultResponseDTO> response = testResultController.createTestResult(requestDTO);
@@ -99,7 +99,7 @@ public class TestResultControllerTest {
         );
 
         when(testResultService.getTestResultOrThrow(1L)).thenReturn(testResult);
-        when(testResultMapper.toTestResultResponseDTO(testResult)).thenReturn(responseDTO);
+        when(testResultMapper.toResponseDTO(testResult)).thenReturn(responseDTO);
 
         // Act
         ResponseEntity<TestResultResponseDTO> response = testResultController.getTestResultById(1L);
@@ -161,7 +161,6 @@ public class TestResultControllerTest {
         verify(testResultService, times(1)).deleteTestResult(1L);
     }
     // =================================================
-
 
     // ============= getAllTestResults Tests =============
     @Test

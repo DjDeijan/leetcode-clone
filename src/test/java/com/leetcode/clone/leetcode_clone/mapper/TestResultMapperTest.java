@@ -43,7 +43,7 @@ public class TestResultMapperTest {
                 .build();
 
         // Act
-        TestResultResponseDTO dto = testResultMapper.toTestResultResponseDTO(testResult);
+        TestResultResponseDTO dto = testResultMapper.toResponseDTO(testResult);
 
         // Assert
         assertNotNull(dto);
@@ -81,7 +81,7 @@ public class TestResultMapperTest {
         );
 
         // Act
-        List<TestResultResponseDTO> dtos = testResultMapper.toTestResultResponseDTOList(testResults);
+        List<TestResultResponseDTO> dtos = testResultMapper.toResponseDTOList(testResults);
 
         // Assert
         assertNotNull(dtos);
@@ -151,7 +151,6 @@ public class TestResultMapperTest {
         assertNull(testResult.getErr());
     }
     // =================================================
-
 
     // ============= updateFromRequestDTO Tests =============
     @Test
