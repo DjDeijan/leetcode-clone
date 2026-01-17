@@ -1,4 +1,4 @@
-package com.leetcode.clone.leetcode_clone.dto.Submissions;
+package com.leetcode.clone.leetcode_clone.dto.Judge0;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

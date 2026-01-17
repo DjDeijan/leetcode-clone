@@ -1,4 +1,6 @@
 package com.leetcode.clone.leetcode_clone.controller;
+import com.leetcode.clone.leetcode_clone.dto.Judge0.Judge0SubmissionDTO;
+import com.leetcode.clone.leetcode_clone.dto.Judge0.Judge0SubmissionRequestDTO;
 import com.leetcode.clone.leetcode_clone.dto.submission.SubmissionRequestDTO;
 import com.leetcode.clone.leetcode_clone.dto.submission.SubmissionResponseDTO;
 import com.leetcode.clone.leetcode_clone.model.Submission;
@@ -35,7 +37,15 @@ public class SubmissionController {
     public ResponseEntity<SubmissionResponseDTO> create(@Valid @RequestBody SubmissionRequestDTO dto) {
 
         Submission submission = submissionService.createSubmission(dto);
-        String a = judge0Service.JudgeSubmission(dto);
+        Judge0SubmissionRequestDTO a = new Judge0SubmissionRequestDTO(
+            dto.taskId(),
+            dto.sourceCode(),
+            dto.languageId(),
+            dto.userId(),
+            submission.getId()
+        );
+
+        String b = judge0Service.JudgeSubmission(a);
         
         return new ResponseEntity<>(submissionMapper.toResponseDTO(submission), HttpStatus.CREATED);
     }

@@ -47,10 +47,11 @@ public class TaskControllerTest {
     @MockitoBean
     private CustomUserDetailsService customUserDetailsService;
 
+    User mockUser = User.builder().id(123456L).build();
     @Test
     void getTaskById_returnsMappedDto() throws Exception {
         Long id = 1L;
-        User mockUser = User.builder().id(123456L).build();
+        
         Task task = Task.builder()
                 .id(id)
                 .title("My title")
@@ -61,7 +62,7 @@ public class TaskControllerTest {
                 id,
                 "My title",
                 "My description",
-                42L,
+                mockUser,
                 List.of()
 
 
@@ -101,8 +102,8 @@ public class TaskControllerTest {
 
         List<Task> tasks = List.of(task1, task2);
 
-        TaskResponseDTO dto1 = new TaskResponseDTO(1L, "T1", "D1", 1L, List.of());
-        TaskResponseDTO dto2 = new TaskResponseDTO(2L, "T2", "D2", 1L, List.of());
+        TaskResponseDTO dto1 = new TaskResponseDTO(1L, "T1", "D1", mockUser, List.of());
+        TaskResponseDTO dto2 = new TaskResponseDTO(2L, "T2", "D2", mockUser, List.of());
 
 
         Pageable pageable = PageRequest.of(0, 20);
@@ -134,7 +135,7 @@ public class TaskControllerTest {
     @Test
     void createTask_returns201_andMappedDto() throws Exception {
 
-        TaskRequestDTO requestDTO = new TaskRequestDTO("New task", "Desc", List.of());
+        TaskRequestDTO requestDTO = new TaskRequestDTO("New task", "Desc", mockUser, List.of());
 
         Task created = Task.builder()
                 .id(10L)
@@ -147,7 +148,7 @@ public class TaskControllerTest {
                 10L,
                 requestDTO.title(),
                 requestDTO.description(),
-                7L,
+                mockUser,
                 List.of()
         );
 
