@@ -42,7 +42,6 @@ class TestResultRepositoryTest {
         Task task = Task.builder()
                 .title("Test Task")
                 .description("Test Description")
-                .difficulty("Easy")
                 .build();
         entityManager.persist(task);
 

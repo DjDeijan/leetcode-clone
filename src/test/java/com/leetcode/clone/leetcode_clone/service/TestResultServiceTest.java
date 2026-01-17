@@ -10,6 +10,10 @@ import com.leetcode.clone.leetcode_clone.repository.TestCaseRepository;
 import com.leetcode.clone.leetcode_clone.repository.TestResultRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -293,7 +297,7 @@ public class TestResultServiceTest {
         // Arrange
         TestResultRequestDTO updateDTO = new TestResultRequestDTO(
                 1L,
-                2L,
+                1L,
                 "Accepted",
                 "token-updated",
                 "Updated output",
@@ -355,8 +359,8 @@ public class TestResultServiceTest {
     void updateTestResult_updatesSubmission_whenChanged() {
         // Arrange
         TestResultRequestDTO updateDTO = new TestResultRequestDTO(
+                3L, // Use 3L here to trigger the change logic
                 1L,
-                3L, // Different submission ID
                 "Accepted",
                 "token",
                 "output",
@@ -364,7 +368,7 @@ public class TestResultServiceTest {
         );
 
         TestCase testCase = TestCase.builder().id(1L).build();
-        Submission oldSubmission = Submission.builder().id(2L).build();
+        Submission oldSubmission = Submission.builder().id(1L).build();
         Submission newSubmission = Submission.builder().id(3L).build();
 
         TestResult existingTestResult = TestResult.builder()
@@ -375,7 +379,7 @@ public class TestResultServiceTest {
                 .build();
 
         when(testResultRepository.findById(1L)).thenReturn(Optional.of(existingTestResult));
-        when(submissionService.getSubmissionOrThrow(3L)).thenReturn(newSubmission);
+        when(submissionService.getSubmissionOrThrow(3L)).thenReturn(newSubmission); // Stub for 3L
         when(testResultRepository.save(any(TestResult.class))).thenReturn(existingTestResult);
 
         // Act
