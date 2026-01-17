@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Profile("dev")
-@Order(3)
+@Order(4)
 @Component
 @RequiredArgsConstructor
 public class TestCaseSeeder implements CommandLineRunner {

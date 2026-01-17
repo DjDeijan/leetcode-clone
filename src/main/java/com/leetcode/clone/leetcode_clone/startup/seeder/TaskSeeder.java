@@ -1,7 +1,10 @@
 package com.leetcode.clone.leetcode_clone.startup.seeder;
 
 import com.leetcode.clone.leetcode_clone.model.Task;
+import com.leetcode.clone.leetcode_clone.model.TaskTag;
+import com.leetcode.clone.leetcode_clone.repository.TagRepository;
 import com.leetcode.clone.leetcode_clone.repository.TaskRepository;
+import com.leetcode.clone.leetcode_clone.repository.TaskTagRepository;
 import com.leetcode.clone.leetcode_clone.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +17,15 @@ import java.util.List;
 
 @Slf4j
 @Profile("dev")
-@Order(2)
+@Order(3)
 @Component
 @RequiredArgsConstructor
 public class TaskSeeder implements CommandLineRunner {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
+    private final TaskTagRepository taskTagRepository;
 
     //Note: This seeder assumes dev DB starts fresh and your seeded users become IDs 1, 2, 3
     //(typical with ddl-auto=create). If your IDs differ, adjust createdByUserId.
@@ -38,10 +43,20 @@ public class TaskSeeder implements CommandLineRunner {
                 .createdByUser(userRepository.findById(1L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
                 .build();
 
+        TaskTag tt1 = TaskTag.builder()
+                .task(t1)
+                .tag(tagRepository.findById(2L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
+                .build();
+
         Task t2 = Task.builder()
                 .title("Add pagination")
                 .description("Implement pageable endpoints for tasks, similar to /users.")
                 .createdByUser(userRepository.findById(2L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
+                .build();
+
+        TaskTag tt2 = TaskTag.builder()
+                .task(t2)
+                .tag(tagRepository.findById(3L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
                 .build();
 
         Task t3 = Task.builder()
@@ -50,7 +65,13 @@ public class TaskSeeder implements CommandLineRunner {
                 .createdByUser(userRepository.findById(2L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
                 .build();
 
+        TaskTag tt3 = TaskTag.builder()
+                .task(t3)
+                .tag(tagRepository.findById(1L).orElseThrow(() -> new RuntimeException("Task Seeding failed!")))
+                .build();
+
         taskRepository.saveAll(List.of(t1, t2, t3));
+        taskTagRepository.saveAll(List.of(tt1, tt2, tt3));
         log.info("--- 3 Tasks were seeded! ---");
     }
 }

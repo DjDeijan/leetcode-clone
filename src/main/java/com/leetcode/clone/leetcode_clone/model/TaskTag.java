@@ -13,7 +13,8 @@ import lombok.*;
 public class TaskTag {
 
     @EmbeddedId
-    private TaskTagId id;
+    @Builder.Default
+    private TaskTagId id = new TaskTagId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("taskId")

@@ -15,6 +15,7 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TaskMapper {
 
+    @Mapping(source = "createdByUser.id", target = "createdByUserId")
     @Mapping(
             target = "tagIds",
             expression = "java(task.getTaskTags().stream()" +
