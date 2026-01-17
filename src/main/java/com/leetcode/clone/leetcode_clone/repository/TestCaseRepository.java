@@ -17,3 +17,5 @@ public interface TestCaseRepository extends JpaRepository<TestCase, Long> {
 
     List<TestCase> findByTaskId(Long taskId);
 }
+
+

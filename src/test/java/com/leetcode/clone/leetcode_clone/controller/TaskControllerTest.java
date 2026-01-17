@@ -27,7 +27,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.leetcode.clone.leetcode_clone.model.User;
 @WebMvcTest(controllers = TaskController.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class TaskControllerTest {
@@ -47,10 +47,11 @@ public class TaskControllerTest {
     @MockitoBean
     private CustomUserDetailsService customUserDetailsService;
 
+    User mockUser = User.builder().id(123456L).build();
     @Test
     void getTaskById_returnsMappedDto() throws Exception {
         Long id = 1L;
-
+        
         Task task = Task.builder()
                 .id(id)
                 .title("My title")
@@ -61,8 +62,10 @@ public class TaskControllerTest {
                 id,
                 "My title",
                 "My description",
-                42L,
+                mockUser,
                 List.of()
+
+
         );
 
         Mockito.when(taskService.getTaskOrThrow(id)).thenReturn(task);
@@ -74,7 +77,7 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.id").value(responseDTO.id().intValue()))
                 .andExpect(jsonPath("$.title").value(responseDTO.title()))
                 .andExpect(jsonPath("$.description").value(responseDTO.description()))
-                .andExpect(jsonPath("$.createdByUserId").value(responseDTO.createdByUserId().intValue()));
+                .andExpect(jsonPath("$.createdByUserId").value(responseDTO.createdByUser()));
     }
 
     @Test
@@ -93,13 +96,15 @@ public class TaskControllerTest {
 
     @Test
     void getAllTasks_returnsMappedDtoPage() throws Exception {
+
         Task task1 = Task.builder().id(1L).title("T1").description("D1").build();
         Task task2 = Task.builder().id(2L).title("T2").description("D2").build();
 
         List<Task> tasks = List.of(task1, task2);
 
-        TaskResponseDTO dto1 = new TaskResponseDTO(1L, "T1", "D1", 1L, List.of());
-        TaskResponseDTO dto2 = new TaskResponseDTO(2L, "T2", "D2", 1L, List.of());
+        TaskResponseDTO dto1 = new TaskResponseDTO(1L, "T1", "D1", mockUser, List.of());
+        TaskResponseDTO dto2 = new TaskResponseDTO(2L, "T2", "D2", mockUser, List.of());
+
 
         Pageable pageable = PageRequest.of(0, 20);
         Page<Task> taskPage = new PageImpl<>(tasks, pageable, tasks.size());
@@ -129,19 +134,21 @@ public class TaskControllerTest {
 
     @Test
     void createTask_returns201_andMappedDto() throws Exception {
-        TaskRequestDTO requestDTO = new TaskRequestDTO("New task", "Desc", List.of());
+
+        TaskRequestDTO requestDTO = new TaskRequestDTO("New task", "Desc", mockUser, List.of());
 
         Task created = Task.builder()
                 .id(10L)
                 .title(requestDTO.title())
                 .description(requestDTO.description())
+                .createdByUser(requestDTO.createdByUser())
                 .build();
 
         TaskResponseDTO responseDTO = new TaskResponseDTO(
                 10L,
                 requestDTO.title(),
                 requestDTO.description(),
-                7L,
+                mockUser,
                 List.of()
         );
 
