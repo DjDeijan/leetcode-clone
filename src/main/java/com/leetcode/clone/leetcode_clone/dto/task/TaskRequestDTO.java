@@ -9,7 +9,7 @@ import java.util.List;
 public record TaskRequestDTO(
         @NotBlank @Size(min = 2, max = 200) String title,
         @Size(max = 10_000) String description,
-        //@Positive Long createdByUserId,
+        @Positive Long createdByUserId,
         List<@Positive Long> tagIds
 
 ) {}
