@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = TestCaseController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class TestcaseControllerTest {
+public class TestCaseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -156,7 +156,7 @@ public class TestcaseControllerTest {
 
         TestCase created = TestCase.builder()
                 .id(10L)
-                //.taskId(requestDTO.taskId()) => because the model doesn't use primitives
+                //.taskId(requestDTO.taskId()) => because the model doesn't use primitives anymore (Task task)
                 .task(task)
                 .input(requestDTO.input())
                 .expectedOutput(requestDTO.expectedOutput())
@@ -165,15 +165,16 @@ public class TestcaseControllerTest {
                 .stackLimitKb(requestDTO.stackLimitKb())
                 .build();
 
-//        TestCaseResponseDTO responseDTO = new TestCaseResponseDTO(
-//                10L,
-//                requestDTO.taskId(), => gotta correct
-//                requestDTO.input(),
-//                requestDTO.expectedOutput(),
-//                requestDTO.timeLimitMs(),
-//                requestDTO.memoryLimitKb(),
-//                requestDTO.stackLimitKb()
-//        );
+        Long taskId = 1L;
+        TestCaseResponseDTO responseDTO = new TestCaseResponseDTO(
+                10L,
+                taskId,
+                requestDTO.input(),
+                requestDTO.expectedOutput(),
+                requestDTO.timeLimitMs(),
+                requestDTO.memoryLimitKb(),
+                requestDTO.stackLimitKb()
+        );
 
         //Mockito.when(testcaseService.createTestCase(any(TestCaseRequestDTO.class))).thenReturn(created);
         Mockito.when(testcaseService.createTestCase(
