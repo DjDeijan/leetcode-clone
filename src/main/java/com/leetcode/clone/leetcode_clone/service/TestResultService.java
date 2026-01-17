@@ -7,6 +7,7 @@ import com.leetcode.clone.leetcode_clone.model.Submission;
 import com.leetcode.clone.leetcode_clone.model.TestCase;
 import com.leetcode.clone.leetcode_clone.model.TestResult;
 import com.leetcode.clone.leetcode_clone.repository.SubmissionRepository;
+import com.leetcode.clone.leetcode_clone.repository.TestCaseRepository;
 import com.leetcode.clone.leetcode_clone.repository.TestResultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class TestResultService {
     private final TestResultMapper testResultMapper;
     private final SubmissionService submissionService;
     private final TaskService taskService;
+    private final TestCaseRepository testCaseRepository;
 
     @Transactional
     public TestResult createTestResult(TestResultRequestDTO dto) {

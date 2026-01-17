@@ -161,4 +161,165 @@ public class TestResultControllerTest {
         verify(testResultService, times(1)).deleteTestResult(1L);
     }
     // =================================================
+
+
+    // ============= getAllTestResults Tests =============
+    @Test
+    void getAllTestResults_success() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        List<TestResult> testResults = List.of(
+                TestResult.builder().id(1L).status("Accepted").build(),
+                TestResult.builder().id(2L).status("Wrong Answer").build()
+        );
+        Page<TestResult> page = new PageImpl<>(testResults, pageable, 2);
+
+        when(testResultService.getAllTestResults(any(Pageable.class))).thenReturn(page);
+
+        // Act
+        testResultController.getAllTestResults(pageable);
+
+        // Assert
+        verify(testResultService, times(1)).getAllTestResults(any(Pageable.class));
+        verify(testResultMapper, times(1)).toPageResponseDTO(page);
+    }
+    // =================================================
+
+
+    // ============= getTestResultsByTestCase Tests =============
+    @Test
+    void getTestResultsByTestCase_success() {
+        // Arrange
+        List<TestResult> testResults = List.of(
+                TestResult.builder().id(1L).status("Accepted").build()
+        );
+
+        List<TestResultResponseDTO> responseDTOs = List.of(
+                new TestResultResponseDTO(1L, 1L, 1L, "Accepted", "token-1", "Output: 5", null)
+        );
+
+        when(testResultService.getTestResultsByTestCase(1L)).thenReturn(testResults);
+        when(testResultMapper.toResponseDTOList(testResults)).thenReturn(responseDTOs);
+
+        // Act
+        ResponseEntity<List<TestResultResponseDTO>> response =
+                testResultController.getTestResultsByTestCase(1L);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+
+        verify(testResultService, times(1)).getTestResultsByTestCase(1L);
+    }
+
+    @Test
+    void getTestResultsByTestCase_returnsEmptyList_whenNoResults() {
+        // Arrange
+        when(testResultService.getTestResultsByTestCase(999L)).thenReturn(List.of());
+        when(testResultMapper.toResponseDTOList(List.of())).thenReturn(List.of());
+
+        // Act
+        ResponseEntity<List<TestResultResponseDTO>> response =
+                testResultController.getTestResultsByTestCase(999L);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().isEmpty());
+    }
+    // =================================================
+
+
+    // ============= getTestResultsByStatus Tests =============
+    @Test
+    void getTestResultsByStatus_success() {
+        // Arrange
+        List<TestResult> testResults = List.of(
+                TestResult.builder().id(1L).status("Accepted").build(),
+                TestResult.builder().id(2L).status("Accepted").build()
+        );
+
+        List<TestResultResponseDTO> responseDTOs = List.of(
+                new TestResultResponseDTO(1L, 1L, 1L, "Accepted", "token-1", "Output: 5", null),
+                new TestResultResponseDTO(2L, 2L, 1L, "Accepted", "token-2", "Output: 3", null)
+        );
+
+        when(testResultService.getTestResultsByStatus("Accepted")).thenReturn(testResults);
+        when(testResultMapper.toResponseDTOList(testResults)).thenReturn(responseDTOs);
+
+        // Act
+        ResponseEntity<List<TestResultResponseDTO>> response =
+                testResultController.getTestResultsByStatus("Accepted");
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().size());
+
+        verify(testResultService, times(1)).getTestResultsByStatus("Accepted");
+    }
+
+    @Test
+    void getTestResultsByStatus_returnsEmptyList_whenNoMatch() {
+        // Arrange
+        when(testResultService.getTestResultsByStatus("Time Limit Exceeded")).thenReturn(List.of());
+        when(testResultMapper.toResponseDTOList(List.of())).thenReturn(List.of());
+
+        // Act
+        ResponseEntity<List<TestResultResponseDTO>> response =
+                testResultController.getTestResultsByStatus("Time Limit Exceeded");
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().isEmpty());
+    }
+    // =================================================
+
+
+    // ============= updateTestResult Tests =============
+    @Test
+    void updateTestResult_success() {
+        // Arrange
+        TestResultRequestDTO requestDTO = new TestResultRequestDTO(
+                1L,
+                2L,
+                "Accepted",
+                "token-updated",
+                "Updated output",
+                null
+        );
+
+        TestResult updatedTestResult = TestResult.builder()
+                .id(1L)
+                .status("Accepted")
+                .judge0Token("token-updated")
+                .stdout("Updated output")
+                .build();
+
+        TestResultResponseDTO responseDTO = new TestResultResponseDTO(
+                1L,
+                1L,
+                2L,
+                "Accepted",
+                "token-updated",
+                "Updated output",
+                null
+        );
+
+        when(testResultService.updateTestResult(1L, requestDTO)).thenReturn(updatedTestResult);
+        when(testResultMapper.toResponseDTO(updatedTestResult)).thenReturn(responseDTO);
+
+        // Act
+        ResponseEntity<TestResultResponseDTO> response = testResultController.updateTestResult(1L, requestDTO);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(responseDTO, response.getBody());
+
+        verify(testResultService, times(1)).updateTestResult(1L, requestDTO);
+    }
+    // =================================================
 }

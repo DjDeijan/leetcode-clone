@@ -151,4 +151,78 @@ public class TestResultMapperTest {
         assertNull(testResult.getErr());
     }
     // =================================================
+
+
+    // ============= updateFromRequestDTO Tests =============
+    @Test
+    void updateFromRequestDTO_updatesFieldsCorrectly() {
+        // Arrange
+        TestCase testCase = TestCase.builder().id(1L).build();
+        Submission submission = Submission.builder().id(2L).build();
+
+        TestResult existingTestResult = TestResult.builder()
+                .id(1L)
+                .testCase(testCase)
+                .submission(submission)
+                .status("Processing")
+                .judge0Token("old-token")
+                .stdout("Old output")
+                .err(null)
+                .build();
+
+        TestResultRequestDTO updateDTO = new TestResultRequestDTO(
+                1L,
+                2L,
+                "Accepted",
+                "new-token",
+                "New output",
+                null
+        );
+
+        // Act
+        testResultMapper.updateFromRequestDTO(existingTestResult, updateDTO);
+
+        // Assert
+        assertEquals(1L, existingTestResult.getId()); // Should remain unchanged
+        assertEquals("Accepted", existingTestResult.getStatus()); // Should be updated
+        assertEquals("new-token", existingTestResult.getJudge0Token()); // Should be updated
+        assertEquals("New output", existingTestResult.getStdout()); // Should be updated
+        assertNull(existingTestResult.getErr());
+    }
+
+    @Test
+    void updateFromRequestDTO_updatesWithErrorMessage() {
+        // Arrange
+        TestCase testCase = TestCase.builder().id(1L).build();
+        Submission submission = Submission.builder().id(2L).build();
+
+        TestResult existingTestResult = TestResult.builder()
+                .id(1L)
+                .testCase(testCase)
+                .submission(submission)
+                .status("Accepted")
+                .judge0Token("token")
+                .stdout("Output: 5")
+                .err(null)
+                .build();
+
+        TestResultRequestDTO updateDTO = new TestResultRequestDTO(
+                1L,
+                2L,
+                "Runtime Error",
+                "token-error",
+                null,
+                "NullPointerException at line 10"
+        );
+
+        // Act
+        testResultMapper.updateFromRequestDTO(existingTestResult, updateDTO);
+
+        // Assert
+        assertEquals("Runtime Error", existingTestResult.getStatus());
+        assertEquals("token-error", existingTestResult.getJudge0Token());
+        assertNull(existingTestResult.getStdout());
+        assertEquals("NullPointerException at line 10", existingTestResult.getErr());
+    }
+    // =================================================
 }
