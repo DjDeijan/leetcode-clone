@@ -189,4 +189,201 @@ public class TestResultServiceTest {
         verify(testResultRepository, never()).deleteById(99L);
     }
     // =================================================
+
+    // ============= getAllTestResults Tests =============
+    @Test
+    void getAllTestResults_returnsPagedResults() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        List<TestResult> testResults = List.of(
+                TestResult.builder().id(1L).status("Accepted").build(),
+                TestResult.builder().id(2L).status("Wrong Answer").build()
+        );
+        Page<TestResult> page = new PageImpl<>(testResults, pageable, 2);
+
+        when(testResultRepository.findAll(pageable)).thenReturn(page);
+
+        // Act
+        Page<TestResult> result = testResultService.getAllTestResults(pageable);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
+        verify(testResultRepository, times(1)).findAll(pageable);
+    }
+    // =================================================
+
+
+    // ============= getTestResultsByTestCase Tests =============
+    @Test
+    void getTestResultsByTestCase_returnsResults() {
+        // Arrange
+        List<TestResult> testResults = List.of(
+                TestResult.builder().id(1L).status("Accepted").build(),
+                TestResult.builder().id(2L).status("Accepted").build()
+        );
+
+        when(testResultRepository.findByTestCaseId(1L)).thenReturn(testResults);
+
+        // Act
+        List<TestResult> results = testResultService.getTestResultsByTestCase(1L);
+
+        // Assert
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        verify(testResultRepository, times(1)).findByTestCaseId(1L);
+    }
+
+    @Test
+    void getTestResultsByTestCase_returnsEmptyList_whenNoResults() {
+        // Arrange
+        when(testResultRepository.findByTestCaseId(999L)).thenReturn(List.of());
+
+        // Act
+        List<TestResult> results = testResultService.getTestResultsByTestCase(999L);
+
+        // Assert
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+        verify(testResultRepository, times(1)).findByTestCaseId(999L);
+    }
+    // =================================================
+
+
+    // ============= getTestResultsByStatus Tests =============
+    @Test
+    void getTestResultsByStatus_returnsResults() {
+        // Arrange
+        List<TestResult> testResults = List.of(
+                TestResult.builder().id(1L).status("Accepted").build(),
+                TestResult.builder().id(2L).status("Accepted").build()
+        );
+
+        when(testResultRepository.findByStatus("Accepted")).thenReturn(testResults);
+
+        // Act
+        List<TestResult> results = testResultService.getTestResultsByStatus("Accepted");
+
+        // Assert
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        verify(testResultRepository, times(1)).findByStatus("Accepted");
+    }
+
+    @Test
+    void getTestResultsByStatus_returnsEmptyList_whenNoResults() {
+        // Arrange
+        when(testResultRepository.findByStatus("Time Limit Exceeded")).thenReturn(List.of());
+
+        // Act
+        List<TestResult> results = testResultService.getTestResultsByStatus("Time Limit Exceeded");
+
+        // Assert
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+        verify(testResultRepository, times(1)).findByStatus("Time Limit Exceeded");
+    }
+    // =================================================
+
+
+    // ============= updateTestResult Tests =============
+    @Test
+    void updateTestResult_success() {
+        // Arrange
+        TestResultRequestDTO updateDTO = new TestResultRequestDTO(
+                1L,
+                2L,
+                "Accepted",
+                "token-updated",
+                "Updated output",
+                null
+        );
+
+        TestCase testCase = TestCase.builder().id(1L).build();
+        Submission submission = Submission.builder().id(2L).build();
+
+        TestResult existingTestResult = TestResult.builder()
+                .id(1L)
+                .testCase(testCase)
+                .submission(submission)
+                .status("Processing")
+                .judge0Token("token-old")
+                .build();
+
+        TestResult updatedTestResult = TestResult.builder()
+                .id(1L)
+                .testCase(testCase)
+                .submission(submission)
+                .status("Accepted")
+                .judge0Token("token-updated")
+                .stdout("Updated output")
+                .build();
+
+        when(testResultRepository.findById(1L)).thenReturn(Optional.of(existingTestResult));
+        when(submissionService.getSubmissionOrThrow(2L)).thenReturn(submission);
+        when(testResultRepository.save(any(TestResult.class))).thenReturn(updatedTestResult);
+
+        // Act
+        TestResult result = testResultService.updateTestResult(1L, updateDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Accepted", result.getStatus());
+        assertEquals("token-updated", result.getJudge0Token());
+        verify(testResultMapper, times(1)).updateFromRequestDTO(existingTestResult, updateDTO);
+        verify(testResultRepository, times(1)).save(existingTestResult);
+    }
+
+    @Test
+    void updateTestResult_throwsException_whenNotFound() {
+        // Arrange
+        TestResultRequestDTO updateDTO = new TestResultRequestDTO(
+                1L, 2L, "Accepted", "token", "output", null
+        );
+
+        when(testResultRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class,
+                () -> testResultService.updateTestResult(999L, updateDTO));
+
+        verify(testResultRepository, never()).save(any(TestResult.class));
+    }
+
+    @Test
+    void updateTestResult_updatesSubmission_whenChanged() {
+        // Arrange
+        TestResultRequestDTO updateDTO = new TestResultRequestDTO(
+                1L,
+                3L, // Different submission ID
+                "Accepted",
+                "token",
+                "output",
+                null
+        );
+
+        TestCase testCase = TestCase.builder().id(1L).build();
+        Submission oldSubmission = Submission.builder().id(2L).build();
+        Submission newSubmission = Submission.builder().id(3L).build();
+
+        TestResult existingTestResult = TestResult.builder()
+                .id(1L)
+                .testCase(testCase)
+                .submission(oldSubmission)
+                .status("Processing")
+                .build();
+
+        when(testResultRepository.findById(1L)).thenReturn(Optional.of(existingTestResult));
+        when(submissionService.getSubmissionOrThrow(3L)).thenReturn(newSubmission);
+        when(testResultRepository.save(any(TestResult.class))).thenReturn(existingTestResult);
+
+        // Act
+        testResultService.updateTestResult(1L, updateDTO);
+
+        // Assert
+        verify(submissionService, times(1)).getSubmissionOrThrow(3L);
+        verify(testResultRepository, times(1)).save(existingTestResult);
+    }
+    // =================================================
 }
