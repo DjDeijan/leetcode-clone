@@ -34,8 +34,7 @@ public class TestResultController {
 
     private final TestResultService testResultService;
     private final TestResultMapper testResultMapper;
-    
-    @PreAuthorize("hasRole('ADMIN')")
+
     @Operation(summary = "Create a new test result")
     @PostMapping
     public ResponseEntity<TestResultResponseDTO> createTestResult(
@@ -82,7 +81,7 @@ public class TestResultController {
         List<TestResult> testResults = testResultService.getTestResultsByStatus(status);
         return ResponseEntity.ok(testResultMapper.toResponseDTOList(testResults));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @Operation(summary = "Update test result")
     @PutMapping("/{id}")
     public ResponseEntity<TestResultResponseDTO> updateTestResult(
@@ -91,7 +90,7 @@ public class TestResultController {
         TestResult updatedTestResult = testResultService.updateTestResult(id, testResultRequestDTO);
         return ResponseEntity.ok(testResultMapper.toResponseDTO(updatedTestResult));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @Operation(summary = "Delete test result")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTestResult(@PathVariable @Positive Long id) {
