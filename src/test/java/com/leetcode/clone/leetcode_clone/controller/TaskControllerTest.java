@@ -55,14 +55,14 @@ public class TaskControllerTest {
                 .id(id)
                 .title("My title")
                 .description("My description")
-                .createdByUserId(42L)
                 .build();
 
         TaskResponseDTO responseDTO = new TaskResponseDTO(
                 id,
                 "My title",
                 "My description",
-                42L
+                42L,
+                List.of()
         );
 
         Mockito.when(taskService.getTaskOrThrow(id)).thenReturn(task);
@@ -87,19 +87,19 @@ public class TaskControllerTest {
         mockMvc.perform(get("/tasks/{id}", id).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.title").value("Resource Not Found"))
-                .andExpect(jsonPath("$.id").value(id.intValue()))
+                .andExpect(jsonPath("$.detail").value("Task with id=999 was not found"))
                 .andExpect(jsonPath("$.resource").value(Task.class.getSimpleName()));
     }
 
     @Test
     void getAllTasks_returnsMappedDtoPage() throws Exception {
-        Task task1 = Task.builder().id(1L).title("T1").description("D1").createdByUserId(1L).build();
-        Task task2 = Task.builder().id(2L).title("T2").description("D2").createdByUserId(1L).build();
+        Task task1 = Task.builder().id(1L).title("T1").description("D1").build();
+        Task task2 = Task.builder().id(2L).title("T2").description("D2").build();
 
         List<Task> tasks = List.of(task1, task2);
 
-        TaskResponseDTO dto1 = new TaskResponseDTO(1L, "T1", "D1", 1L);
-        TaskResponseDTO dto2 = new TaskResponseDTO(2L, "T2", "D2", 1L);
+        TaskResponseDTO dto1 = new TaskResponseDTO(1L, "T1", "D1", 1L, List.of());
+        TaskResponseDTO dto2 = new TaskResponseDTO(2L, "T2", "D2", 1L, List.of());
 
         Pageable pageable = PageRequest.of(0, 20);
         Page<Task> taskPage = new PageImpl<>(tasks, pageable, tasks.size());
@@ -129,20 +129,20 @@ public class TaskControllerTest {
 
     @Test
     void createTask_returns201_andMappedDto() throws Exception {
-        TaskRequestDTO requestDTO = new TaskRequestDTO("New task", "Desc", 7L);
+        TaskRequestDTO requestDTO = new TaskRequestDTO("New task", "Desc", List.of());
 
         Task created = Task.builder()
                 .id(10L)
                 .title(requestDTO.title())
                 .description(requestDTO.description())
-                .createdByUserId(requestDTO.createdByUserId())
                 .build();
 
         TaskResponseDTO responseDTO = new TaskResponseDTO(
                 10L,
                 requestDTO.title(),
                 requestDTO.description(),
-                requestDTO.createdByUserId()
+                7L,
+                List.of()
         );
 
         Mockito.when(taskService.createTask(any(TaskRequestDTO.class))).thenReturn(created);
@@ -152,7 +152,7 @@ public class TaskControllerTest {
                 {
                   "title": "New task",
                   "description": "Desc",
-                  "createdByUserId": 7
+                  "tagIds": []
                 }
                 """;
 

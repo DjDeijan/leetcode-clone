@@ -24,6 +24,7 @@ public class TestResultServiceTest {
     private TestResultMapper testResultMapper;
     private SubmissionService submissionService;
     private TestCaseRepository testCaseRepository;
+    private TaskService taskService;
 
     @BeforeEach
     void setUp() {
@@ -31,11 +32,14 @@ public class TestResultServiceTest {
         testResultMapper = mock(TestResultMapper.class);
         submissionService = mock(SubmissionService.class);
         testCaseRepository = mock(TestCaseRepository.class);
+        taskService = mock(TaskService.class);
+
         testResultService = new TestResultService(
                 testResultRepository,
+                testCaseRepository,
                 testResultMapper,
                 submissionService,
-                testCaseRepository
+                taskService
         );
     }
 
