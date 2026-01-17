@@ -7,6 +7,9 @@ import com.leetcode.clone.leetcode_clone.mapper.SubmissionMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.io.Console;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.leetcode.clone.leetcode_clone.service.Judge0Service;
 
 @RestController
 @RequestMapping("/submissions")
@@ -25,10 +29,14 @@ public class SubmissionController {
 
     private final SubmissionService submissionService;
     private final SubmissionMapper submissionMapper;
+    private final Judge0Service judge0Service;
 
     @PostMapping
     public ResponseEntity<SubmissionResponseDTO> create(@Valid @RequestBody SubmissionRequestDTO dto) {
+
         Submission submission = submissionService.createSubmission(dto);
+        String a = judge0Service.JudgeSubmission(dto);
+        
         return new ResponseEntity<>(submissionMapper.toResponseDTO(submission), HttpStatus.CREATED);
     }
 
@@ -47,7 +55,7 @@ public class SubmissionController {
 
 
         //MY TESTS
-    private final Judge0Service judge0Service;
+
     @GetMapping("/test")
    public void test(){
        System.out.println("SubmissionController works");
