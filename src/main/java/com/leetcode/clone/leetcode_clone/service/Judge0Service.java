@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.leetcode.clone.leetcode_clone.dto.Judge0.Judge0SubmissionDTO;
 import com.leetcode.clone.leetcode_clone.dto.Judge0.Judge0SubmissionRequestDTO;
 import com.leetcode.clone.leetcode_clone.dto.submission.SubmissionRequestDTO;
 import com.leetcode.clone.leetcode_clone.model.Submission;
@@ -170,13 +168,7 @@ public class Judge0Service {
 
         return "Judged submission";
     }
-    public String GetBatch(){
-        return "Getting batch";
-    }
-    public String GetSingleSubmission(){
-        return "Getting single submission";
-    }
-
+   
     private String encode(String value) {
     if (value == null) return "";
     return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
