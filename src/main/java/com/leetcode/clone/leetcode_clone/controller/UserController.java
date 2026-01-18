@@ -47,14 +47,15 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-
+    @Operation(summary = "Get user by Id")
     @PreAuthorize("hasRole('ADMIN') or #id == principal.userId")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable @Positive Long id) {
         User fetchedUser = userService.getUserOrThrow(id);
         return new ResponseEntity<>(userMapper.toUserResponseDTO(fetchedUser), HttpStatus.OK);
     }
-
+    @Operation(summary = "Get all users")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
     public ResponseEntity<UserPageResponseDTO> getAllUsers(
             @ParameterObject @PageableDefault(size = 2, sort = "id") Pageable pageable
@@ -62,7 +63,8 @@ public class UserController {
         Page<User> page = userService.getAllUsers(pageable);
         return new ResponseEntity<>(userMapper.toUserPageResponseDTO(page), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete user by Id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable @Positive Long id) {
         userService.deleteUser(id);
@@ -84,13 +86,13 @@ public class UserController {
         User newUser = userService.putUser(id, userRequestDTO);
         return new ResponseEntity<>(userMapper.toUserResponseDTO(newUser), HttpStatus.OK);
     }
-
+    @Operation(summary = "Get users by first name")
     @GetMapping("/filter/firstName")
     public ResponseEntity<List<UserNameResponseDTO>> getUsersByFirstName(@RequestParam @NotBlank String firstName) {
         List<UserNameProjectionDTO> userNameProjectionDTOs = userService.getUserNamesByUsername(firstName);
         return new ResponseEntity<>(userMapper.toUserNameResponseDTOListFromProjectionDTOList(userNameProjectionDTOs), HttpStatus.OK);
     }
-
+    @Operation(summary = "Update user's profile picture")
     @PreAuthorize("hasRole('ADMIN') or #id == principal.userId")
     @PatchMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponseDTO> patchUserAvatar(@PathVariable @Positive Long id,
@@ -121,6 +123,7 @@ public class UserController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/role")
     public ResponseEntity<UserResponseDTO> patchUserRole(
             @Parameter(description = "User id", example = "2", required = true)
